@@ -43,3 +43,30 @@ class FourLayersNet(nn.Module):
       x = F.relu(self.fc3(x))
       x = self.fc4(x)
       return x
+
+def circle_transform(angle_vec):
+	cos_tensor = torch.cos(angle_
+	sin_tensor = torch.sin(angle_
+	return torch.stack((cos_tensor, sin_tensor), -1).float()
+
+def train_net(net, n_epochs, input_data, target):
+	criterion = nn.MSELoss(reduction='mean')
+	optimizer = optim.SGD(net.parameters(), lr=1)
+
+	for epoch in range(n_epochs):  
+		optimizer.zero_grad()
+
+	
+		outputs = net(input_data)
+
+		loss = criterion(outputs.view(-1), target)
+
+		loss.backward()
+
+		optimizer.step()
+  
+  
+
+
+
+
