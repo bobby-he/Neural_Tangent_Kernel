@@ -30,7 +30,7 @@ class LinearNeuralTangentKernel(nn.Linear):
 
 class FourLayersNet(nn.Module):
 
-  def __init__(self, n_wid, n_out, beta=0.1):
+  def __init__(self, n_wid, n_out = 1, beta=0.1):
       super(FourLayersNet, self).__init__()
       self.fc1 = LinearNeuralTangentKernel(2, n_wid, beta=beta)
       self.fc2 = LinearNeuralTangentKernel(n_wid, n_wid, beta=beta)
