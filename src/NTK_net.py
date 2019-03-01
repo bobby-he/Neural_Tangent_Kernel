@@ -45,8 +45,8 @@ class FourLayersNet(nn.Module):
       return x
 
 def circle_transform(angle_vec):
-	cos_tensor = torch.cos(angle_
-	sin_tensor = torch.sin(angle_
+	cos_tensor = torch.cos(angle_vec)
+	sin_tensor = torch.sin(angle_vec)
 	return torch.stack((cos_tensor, sin_tensor), -1).float()
 
 def train_net(net, n_epochs, input_data, target):
