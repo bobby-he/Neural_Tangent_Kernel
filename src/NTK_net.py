@@ -30,12 +30,12 @@ class LinearNeuralTangentKernel(nn.Linear):
 
 class FourLayersNet(nn.Module):
 
-  def __init__(self, n, beta=0.1):
+  def __init__(self, n_wid, n_out, beta=0.1):
       super(FourLayersNet, self).__init__()
-      self.fc1 = LinearNeuralTangentKernel(2, n, beta=beta)
-      self.fc2 = LinearNeuralTangentKernel(n, n, beta=beta)
-      self.fc3 = LinearNeuralTangentKernel(n, n, beta=beta)
-      self.fc4 = LinearNeuralTangentKernel(n, 1, beta=beta)
+      self.fc1 = LinearNeuralTangentKernel(2, n_wid, beta=beta)
+      self.fc2 = LinearNeuralTangentKernel(n_wid, n_wid, beta=beta)
+      self.fc3 = LinearNeuralTangentKernel(n_wid, n_wid, beta=beta)
+      self.fc4 = LinearNeuralTangentKernel(n_wid, n_out, beta=beta)
 
   def forward(self, x):
       x = F.relu(self.fc1(x))
