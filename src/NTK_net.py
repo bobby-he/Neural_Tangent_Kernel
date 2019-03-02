@@ -65,7 +65,7 @@ def train_net(net, n_epochs, input_data, target):
 
 		optimizer.step()
   
-def stupid_sigma(n_width, n_pts, temp_mat, n_nets):
+def variance_est(n_width, n_pts, temp_mat, n_nets):
 	with torch.no_grad():    
 		gamma_test = torch.tensor(np.linspace(-np.pi,np.pi, n_pts))
 		gamma_data = torch.tensor(np.array([-2.2, -1, 1, 2.2]))
