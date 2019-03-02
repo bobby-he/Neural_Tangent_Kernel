@@ -65,7 +65,19 @@ def train_net(net, n_epochs, input_data, target):
 
 		optimizer.step()
   
-  
+def stupid_sigma(n_width, n_pts, temp_mat, n_nets):
+	with torch.no_grad():    
+		gamma_test = torch.tensor(np.linspace(-np.pi,np.pi, n_pts))
+		gamma_data = torch.tensor(np.array([-2.2, -1, 1, 2.2]))
+		input_data = circle_transform(gamma_data)
+		circle_test = circle_transform(gamma_test)
+		net = FourLayersNet(n_width, n_out = n_nets).cuda()
+		sig_testvtest = torch.var(net(circle_test.cuda()), dim = 1, keepdim = True).cpu()
+		sig_testvtrain = torch.mm(net(circle_test.cuda()), torch.t(net(input_data.cuda()))).cpu()/n_nets
+		sig_trainvtrain =torch.mm(net(input_data.cuda()), torch.t(net(input_data.cuda()))).cpu()/n_nets
+		variance_vec = sig_testvtest.view(-1) -2 * torch.diag(torch.mm(sig_testvtrain,torch.t(temp_mat))) + torch.diag(torch.mm(temp_mat, torch.mm(sig_trainvtrain, torch.t(temp_mat))))
+		variance_vec = variance_vec.cpu()
+		return variance_vec
 
 
 
