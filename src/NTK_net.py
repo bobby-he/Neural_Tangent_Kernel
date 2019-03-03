@@ -90,8 +90,8 @@ def kernel_leastsq_update(test_output, train_output, K_testvtrain, K_trainvtrain
 
 
 class AnimationPlot_lsq(object):
-  def __init__(self, n_nets, n_wid = 50, n_out = 1, n_pts = 100, input_data = input_data, K_testvtrain = K_testvtrain,
-               K_trainvtrain = K_trainvtrain, train_target = target_data, epochs_per_frame = 1):
+  def __init__(self, n_nets, n_wid = 50, n_out = 1, n_pts = 100, input_data, K_testvtrain,
+               K_trainvtrain, train_target, epochs_per_frame = 1):
     
     self.test_output = np.zeros((n_pts, n_nets))
     self.train_output = np.zeros((4, n_nets))
