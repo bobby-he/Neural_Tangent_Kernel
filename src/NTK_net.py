@@ -105,7 +105,8 @@ class AnimationPlot_lsq(object):
     self.train_target = train_target
     self.gamma_vec = torch.tensor(np.linspace(-np.pi, np.pi, n_pts))
     self.circle_test = circle_transform(self.gamma_vec).cuda()
-    
+    self.ax = ax
+
     for i in range(self.n_nets):
       self.__dict__['net {}'.format(i)] = FourLayersNet(n_wid, n_out).cuda()
       self.test_output[:, i] = self.__dict__['net {}'.format(i)](self.circle_test).cpu().detach().numpy().flatten()
