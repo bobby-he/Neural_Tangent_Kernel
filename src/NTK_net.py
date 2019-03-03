@@ -90,7 +90,7 @@ def kernel_leastsq_update(test_output, train_output, K_testvtrain, K_trainvtrain
 
 
 class AnimationPlot_lsq(object):
-  def __init__(self, n_nets, input_data, K_testvtrain, K_trainvtrain, train_target, line_tuple
+  def __init__(self, n_nets, input_data, K_testvtrain, K_trainvtrain, train_target, line_tuple,
 	       n_wid = 50, n_out = 1, n_pts = 100, epochs_per_frame = 1):
     self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a,\
 	self.line2a, self.line3a, self.line4a, self.line0a = line_tuple
