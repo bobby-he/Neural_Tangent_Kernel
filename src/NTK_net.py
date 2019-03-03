@@ -77,7 +77,7 @@ def variance_est(n_width, n_pts, temp_mat, n_nets):
 		sig_trainvtrain =torch.mm(net(input_data.cuda()), torch.t(net(input_data.cuda()))).cpu()/n_nets
 		variance_vec = sig_testvtest.view(-1) -2 * torch.diag(torch.mm(sig_testvtrain,torch.t(temp_mat))) + torch.diag(torch.mm(temp_mat, torch.mm(sig_trainvtrain, torch.t(temp_mat))))
 		variance_vec = variance_vec.cpu()
-		return variance_vec
+		return np.maximum(variance_vec)
 
 # saves gradient objects onto cpu, saves GPU memory
 def cpu_tuple(tuple_obj):
