@@ -90,9 +90,10 @@ def kernel_leastsq_update(test_output, train_output, K_testvtrain, K_trainvtrain
 
 
 class AnimationPlot_lsq(object):
-  def __init__(self, n_nets, input_data, K_testvtrain, K_trainvtrain, train_target,
+  def __init__(self, n_nets, input_data, K_testvtrain, K_trainvtrain, train_target, line_tuple
 	       n_wid = 50, n_out = 1, n_pts = 100, epochs_per_frame = 1):
-    
+    self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a,\
+	self.line2a, self.line3a, self.line4a, self.line0a = line_tuple
     self.test_output = np.zeros((n_pts, n_nets))
     self.train_output = np.zeros((4, n_nets))
     self.epochs_per_frame = epochs_per_frame
@@ -123,32 +124,32 @@ class AnimationPlot_lsq(object):
       self.step()
       j = i - 2
     
-    line0.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(0)](self.circle_test).cpu().detach().numpy())
-    line0a.set_data(self.gamma_vec.numpy(), self.test_output[:, 0])
+    self.line0.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(0)](self.circle_test).cpu().detach().numpy())
+    self.line0a.set_data(self.gamma_vec.numpy(), self.test_output[:, 0])
     if self.n_nets > 1:
-      line1.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(1)](self.circle_test).cpu().detach().numpy())
-      line1a.set_data(self.gamma_vec.numpy(), self.test_output[:, 1])
+      self.line1.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(1)](self.circle_test).cpu().detach().numpy())
+      self.line1a.set_data(self.gamma_vec.numpy(), self.test_output[:, 1])
     if self.n_nets > 2:
-      line2a.set_data(self.gamma_vec.numpy(), self.test_output[:, 2])
-      line2.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(2)](self.circle_test).cpu().detach().numpy())
+      self.line2a.set_data(self.gamma_vec.numpy(), self.test_output[:, 2])
+      self.line2.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(2)](self.circle_test).cpu().detach().numpy())
     
     if self.n_nets > 3:
-      line3.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(3)](self.circle_test).cpu().detach().numpy())
-      line3a.set_data(self.gamma_vec.numpy(), self.test_output[:, 3])
+      self.line3.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(3)](self.circle_test).cpu().detach().numpy())
+      self.line3a.set_data(self.gamma_vec.numpy(), self.test_output[:, 3])
     if self.n_nets >4:
-      line4.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(4)](self.circle_test).cpu().detach().numpy())
-      line4a.set_data(self.gamma_vec.numpy(), self.test_output[:, 4])
+      self.line4.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(4)](self.circle_test).cpu().detach().numpy())
+      self.line4a.set_data(self.gamma_vec.numpy(), self.test_output[:, 4])
 
     ax.set_title('Epoch {}'.format(j))
     
     if self.n_nets ==1:
-      return(line0, line0a,)
+      return(self.line0, self.line0a,)
     if self.n_nets ==2:
-      return(line0, line0a, line1, line1a,)
+      return(self.line0, self.line0a, self.line1, self.line1a,)
     if self.n_nets ==3:
-      return(line0, line0a, line1, line1a, line2, line2a,)
+      return(self.line0, self.line0a, self.line1, self.line1a, self.line2, self.line2a,)
     if self.n_nets ==4:
-      return(line0, line0a, line1, line1a, line2, line2a, line3, line3a,)
+      return(self.line0, self.line0a, self.line1, self.line1a, self.line2, self.line2a, self.line3, self.line3a,)
     if self.n_nets ==5:
-      return (line1, line2, line3, line4, line0, line1a, line2a, line3a, line4a, line0a,)
+      return (self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a, self.line2a, self.line3a, self.line4a, self.line0a,)
       
