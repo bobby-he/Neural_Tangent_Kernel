@@ -79,6 +79,8 @@ def variance_est(n_width, n_pts, temp_mat, n_nets):
 		variance_vec = variance_vec.cpu()
 		return variance_vec
 
-
+# saves gradient objects onto cpu, saves GPU memory
+def cpu_tuple(tuple_obj):
+  return tuple([obj.cpu() for obj in tuple_obj])
 
 
