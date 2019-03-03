@@ -59,7 +59,7 @@ def train_net(net, n_epochs, input_data, target):
 	
 		outputs = net(input_data)
 
-		loss = criterion(outputs.view(-1), target)
+		loss = criterion(outputs.view(-1), target)/2
 
 		loss.backward()
 
