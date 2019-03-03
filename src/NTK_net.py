@@ -83,4 +83,72 @@ def variance_est(n_width, n_pts, temp_mat, n_nets):
 def cpu_tuple(tuple_obj):
   return tuple([obj.cpu() for obj in tuple_obj])
 
+def kernel_leastsq_update(test_output, train_output, K_testvtrain, K_trainvtrain, train_target, n_steps = 1): 
+  test_output = test_output + n_steps/len(train_target) * np.matmul(K_testvtrain, train_target - train_output).flatten()
+  train_output = train_output + n_steps/len(train_target) * np.matmul(K_trainvtrain, train_target - train_output).flatten()
+  return test_output, train_output
 
+
+class AnimationPlot_lsq(object):
+  def __init__(self, n_nets, n_wid = 50, n_out = 1, n_pts = 100, input_data = input_data, K_testvtrain = K_testvtrain,
+               K_trainvtrain = K_trainvtrain, train_target = target_data, epochs_per_frame = 1):
+    
+    self.test_output = np.zeros((n_pts, n_nets))
+    self.train_output = np.zeros((4, n_nets))
+    self.epochs_per_frame = epochs_per_frame
+    self.n_nets = n_nets
+    self.input_data = input_data
+    self.train_target = train_target
+    self.K_testvtrain = K_testvtrain
+    self.K_trainvtrain = K_trainvtrain
+    self.train_target = train_target
+    self.gamma_vec = torch.tensor(np.linspace(-np.pi, np.pi, n_pts))
+    self.circle_test = circle_transform(self.gamma_vec).cuda()
+    
+    for i in range(self.n_nets):
+      self.__dict__['net {}'.format(i)] = FourLayersNet(n_wid, n_out).cuda()
+      self.test_output[:, i] = self.__dict__['net {}'.format(i)](self.circle_test).cpu().detach().numpy().flatten()
+      self.train_output[:, i] = self.__dict__['net {}'.format(i)](self.input_data.cuda()).cpu().detach().numpy().flatten()
+  
+  def step(self):
+    for i in range(self.n_nets):
+      train_net(self.__dict__['net {}'.format(i)], self.epochs_per_frame, self.input_data, self.train_target)
+      self.test_output[:, i], self.train_output[:, i] = kernel_leastsq_update(self.test_output[:, i],  self.train_output[:, i],
+                                                                              self.K_testvtrain, self.K_trainvtrain,
+                                                                              self.train_target.cpu().detach().numpy())
+      
+  def plot_step(self, i):
+    j = 0
+    if i>2:
+      self.step()
+      j = i - 2
+    
+    line0.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(0)](self.circle_test).cpu().detach().numpy())
+    line0a.set_data(self.gamma_vec.numpy(), self.test_output[:, 0])
+    if self.n_nets > 1:
+      line1.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(1)](self.circle_test).cpu().detach().numpy())
+      line1a.set_data(self.gamma_vec.numpy(), self.test_output[:, 1])
+    if self.n_nets > 2:
+      line2a.set_data(self.gamma_vec.numpy(), self.test_output[:, 2])
+      line2.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(2)](self.circle_test).cpu().detach().numpy())
+    
+    if self.n_nets > 3:
+      line3.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(3)](self.circle_test).cpu().detach().numpy())
+      line3a.set_data(self.gamma_vec.numpy(), self.test_output[:, 3])
+    if self.n_nets >4:
+      line4.set_data(self.gamma_vec.numpy(), self.__dict__['net {}'.format(4)](self.circle_test).cpu().detach().numpy())
+      line4a.set_data(self.gamma_vec.numpy(), self.test_output[:, 4])
+
+    ax.set_title('Epoch {}'.format(j))
+    
+    if self.n_nets ==1:
+      return(line0, line0a,)
+    if self.n_nets ==2:
+      return(line0, line0a, line1, line1a,)
+    if self.n_nets ==3:
+      return(line0, line0a, line1, line1a, line2, line2a,)
+    if self.n_nets ==4:
+      return(line0, line0a, line1, line1a, line2, line2a, line3, line3a,)
+    if self.n_nets ==5:
+      return (line1, line2, line3, line4, line0, line1a, line2a, line3a, line4a, line0a,)
+      
