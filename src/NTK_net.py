@@ -157,6 +157,7 @@ class AnimationPlot_lsq(object):
 def kernel_mats(net, gamma_train, gamma_test, use_cuda = True):
   # for a given net, function returns K_testvtrain (n_test by n_train) and K_trainvtrain (n_train by n_train)
   # suppose cuda available
+  n_pts = len(gamma_test)
   if use_cuda:
     net = net.cuda()
   grad_list = []
@@ -170,7 +171,7 @@ def kernel_mats(net, gamma_train, gamma_test, use_cuda = True):
   K_testvtrain = torch.zeros((n_pts,4))
   for i, gamma in enumerate(gamma_test):
     if ((i+1)*10)%len(gamma_test) == 0:
-      print('K_testvtrain is {}% complete'.format(int((1+i)/len(gamma_test)*100)))
+      print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
     circle_pt = circle_transform(gamma)
     if use_cuda:
       circle_pt = circle_pt.cuda()
