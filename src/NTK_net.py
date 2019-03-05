@@ -15,7 +15,6 @@ class LinearNeuralTangentKernel(nn.Linear):
       super(LinearNeuralTangentKernel, self).__init__(in_features, out_features)
       self.reset_parameters()
       self.w_sig = w_sig
-      self.b_sig = b_sig
       
     def reset_parameters(self):
         torch.nn.init.normal_(self.weight, mean=0, std=1)
