@@ -93,26 +93,26 @@ def kernel_leastsq_update(test_output, train_output, K_testvtrain, K_trainvtrain
 class AnimationPlot_lsq(object):
     def __init__(self, n_nets, input_data, K_testvtrain, K_trainvtrain, train_target, line_tuple, ax,
        n_wid = 50, n_out = 1, n_pts = 100, epochs_per_frame = 1):
-    self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a,\
-    self.line2a, self.line3a, self.line4a, self.line0a = line_tuple
-    self.test_output = np.zeros((n_pts, n_nets))
-    self.train_output = np.zeros((4, n_nets))
-    self.epochs_per_frame = epochs_per_frame
-    self.n_nets = n_nets
-    self.input_data = input_data
-    self.train_target = train_target
-    self.K_testvtrain = K_testvtrain
-    self.K_trainvtrain = K_trainvtrain
-    self.train_target = train_target
-    self.gamma_vec = torch.tensor(np.linspace(-np.pi, np.pi, n_pts))
-    self.circle_test = circle_transform(self.gamma_vec).cuda()
-    self.ax = ax
+        self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a,\
+        self.line2a, self.line3a, self.line4a, self.line0a = line_tuple
+        self.test_output = np.zeros((n_pts, n_nets))
+        self.train_output = np.zeros((4, n_nets))
+        self.epochs_per_frame = epochs_per_frame
+        self.n_nets = n_nets
+        self.input_data = input_data
+        self.train_target = train_target
+        self.K_testvtrain = K_testvtrain
+        self.K_trainvtrain = K_trainvtrain
+        self.train_target = train_target
+        self.gamma_vec = torch.tensor(np.linspace(-np.pi, np.pi, n_pts))
+        self.circle_test = circle_transform(self.gamma_vec).cuda()
+        self.ax = ax
 
-    for i in range(self.n_nets):
-        self.__dict__['net {}'.format(i)] = FourLayersNet(n_wid, n_out).cuda()
-        self.test_output[:, i] = self.__dict__['net {}'.format(i)](self.circle_test).cpu().detach().numpy().flatten()
-        self.train_output[:, i] = self.__dict__['net {}'.format(i)](self.input_data.cuda()).cpu().detach().numpy().flatten()
-  
+        for i in range(self.n_nets):
+            self.__dict__['net {}'.format(i)] = FourLayersNet(n_wid, n_out).cuda()
+            self.test_output[:, i] = self.__dict__['net {}'.format(i)](self.circle_test).cpu().detach().numpy().flatten()
+            self.train_output[:, i] = self.__dict__['net {}'.format(i)](self.input_data.cuda()).cpu().detach().numpy().flatten()
+
     def step(self):
         for i in range(self.n_nets):
         train_net(self.__dict__['net {}'.format(i)], self.epochs_per_frame, self.input_data, self.train_target)
