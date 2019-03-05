@@ -115,8 +115,8 @@ class AnimationPlot_lsq(object):
 
     def step(self):
         for i in range(self.n_nets):
-        train_net(self.__dict__['net {}'.format(i)], self.epochs_per_frame, self.input_data, self.train_target)
-        self.test_output[:, i], self.train_output[:, i] = kernel_leastsq_update(self.test_output[:, i],  self.train_output[:, i],
+            train_net(self.__dict__['net {}'.format(i)], self.epochs_per_frame, self.input_data, self.train_target)
+            self.test_output[:, i], self.train_output[:, i] = kernel_leastsq_update(self.test_output[:, i],  self.train_output[:, i],
                                                                               self.K_testvtrain, self.K_trainvtrain,
                                                                               self.train_target.cpu().detach().numpy())
       
