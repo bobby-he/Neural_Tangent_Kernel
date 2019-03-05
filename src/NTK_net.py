@@ -10,7 +10,7 @@ import torch.optim as optim
 
 class LinearNeuralTangentKernel(nn.Linear): 
     
-    def __init__(self, in_features, out_features, bias=True, beta=0.1):
+    def __init__(self, in_features, out_features, bias=True, beta=0.1, w_sig = 1, b_sig = 1):
       self.beta = beta
       super(LinearNeuralTangentKernel, self).__init__(in_features, out_features)
       self.reset_parameters()
