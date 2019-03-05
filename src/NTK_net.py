@@ -50,9 +50,9 @@ def circle_transform(angle_vec):
     sin_tensor = torch.sin(angle_vec)
     return torch.stack((cos_tensor, sin_tensor), -1).float()
 
-def train_net(net, n_epochs, input_data, target):
+def train_net(net, n_epochs, input_data, target, lr=1):
     criterion = nn.MSELoss(reduction='mean')
-    optimizer = optim.SGD(net.parameters(), lr=1)
+    optimizer = optim.SGD(net.parameters(), lr=lr)
 
     for epoch in range(n_epochs):  
         optimizer.zero_grad()
