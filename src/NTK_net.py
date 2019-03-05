@@ -155,12 +155,16 @@ class AnimationPlot_lsq(object):
     if self.n_nets ==5:
       return (self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a, self.line2a, self.line3a, self.line4a, self.line0a,)
       
-def kernel_mats(net, gamma_train, gamma_test, use_cuda = True):
-  # for a given net, function returns K_testvtrain (n_test by n_train) and K_trainvtrain (n_train by n_train)
+def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, kernels='both'):
+  # for a given net, this function computes the K_testvtrain (n_test by n_train) and the
+  # K_trainvtrain (n_train by n_train) kernels. 
+  # You can choose which one to return by the parameter 'kernels', with values 'both' (default), 'testvtrain' or 'trainvtrain'
+
   # suppose cuda available
   n_pts = len(gamma_test)
   if use_cuda:
     net = net.cuda()
+# the following computes the gradients with respect to all parameters
   grad_list = []
   for gamma in gamma_train:
     circle_pt = circle_transform(gamma)
@@ -169,25 +173,34 @@ def kernel_mats(net, gamma_train, gamma_test, use_cuda = True):
     loss = net(circle_pt)
     grad_list.append(torch.autograd.grad(loss,net.parameters(), retain_graph = True))
   
-  K_testvtrain = torch.zeros((n_pts,4))
-  for i, gamma in enumerate(gamma_test):
-    if ((i+1)*10)%len(gamma_test) == 0:
-      print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
-    circle_pt = circle_transform(gamma)
-    if use_cuda:
-      circle_pt = circle_pt.cuda()
-    loss = net(circle_pt)
-    grads = torch.autograd.grad(loss,net.parameters(), retain_graph = True) # extract NN gradients 
-    for j in range(len(grad_list)):
-      pt_grad = grad_list[j] # the gradients at the jth (out of 4) data point
-      K_testvtrain[i, j] = sum([torch.sum(torch.mul(grads[u], pt_grad[u])) for u in range(len(grads))])
+# testvstrain kernel
+	if kernels=='both' or kernels=='testvtrain':
+		K_testvtrain = torch.zeros((n_pts,4))
+		for i, gamma in enumerate(gamma_test):
+			if ((i+1)*10)%len(gamma_test) == 0:
+				print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
+			circle_pt = circle_transform(gamma)
+			if use_cuda:
+				circle_pt = circle_pt.cuda()
+			loss = net(circle_pt)
+			grads = torch.autograd.grad(loss,net.parameters(), retain_graph = True) # extract NN gradients 
+			for j in range(len(grad_list)):
+				pt_grad = grad_list[j] # the gradients at the jth (out of 4) data point
+				K_testvtrain[i, j] = sum([torch.sum(torch.mul(grads[u], pt_grad[u])) for u in range(len(grads))])
   
-  K_trainvtrain = torch.zeros((4,4))
-  for i in range(4):
-    grad_i = grad_list[i]
-    for j in range(i+1):
-      grad_j = grad_list[j]
-      K_trainvtrain[i, j] = sum([torch.sum(torch.mul(grad_i[u], grad_j[u])) for u in range(len(grad_j))])
-      K_trainvtrain[j, i] = K_trainvtrain[i, j]
+#trainvstrain kernel
+	if kernels=='both' or kernels=='trainvtrain':
+		K_trainvtrain = torch.zeros((4,4))
+		for i in range(4):
+			grad_i = grad_list[i]
+			for j in range(i+1):
+				grad_j = grad_list[j]
+				K_trainvtrain[i, j] = sum([torch.sum(torch.mul(grad_i[u], grad_j[u])) for u in range(len(grad_j))])
+				K_trainvtrain[j, i] = K_trainvtrain[i, j]
   
-  return K_testvtrain, K_trainvtrain
+	if kernels=='both':
+  	return K_testvtrain, K_trainvtrain
+	elif kernels=='trainvtrain': 
+		return K_trainvtrain
+	elif kernels=='testvtrain': 
+		return K_testvtrain
