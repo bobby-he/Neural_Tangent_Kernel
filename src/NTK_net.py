@@ -179,7 +179,7 @@ def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, n_train = 4, kern
         K_testvtrain = torch.zeros((n_pts,n_train))
         for i, gamma in enumerate(gamma_test):
             if ((i+1)*10)%len(gamma_test) == 0:
-                print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
+                #print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
             circle_pt = circle_transform(gamma)
             if use_cuda:
                 circle_pt = circle_pt.cuda()
@@ -229,7 +229,7 @@ def kernel_mats_d_gan(net, d_train, d_test, use_cuda = True, kernels='both'):
         K_testvtrain = torch.zeros((n_test_pts,n_train_pts))
         for i, d_point in enumerate(d_test):
             if ((i+1)*10)%len(d_test) == 0:
-                print('K_testvtrain is {}% complete'.format(int((i+1)/len(d_test)*100)))
+                #print('K_testvtrain is {}% complete'.format(int((i+1)/len(d_test)*100)))
             if use_cuda:
                 d_point = d_point.cuda()
             loss = net(d_point)
