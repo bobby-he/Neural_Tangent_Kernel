@@ -156,7 +156,7 @@ class AnimationPlot_lsq(object):
             return (self.line1, self.line2, self.line3, self.line4, self.line0, self.line1a, self.line2a, self.line3a, self.line4a, self.line0a,)
         
       
-def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, kernels='both'):
+def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, n_train = 4, kernels='both'):
   # for a given net, this function computes the K_testvtrain (n_test by n_train) and the
   # K_trainvtrain (n_train by n_train) kernels. 
   # You can choose which one to return by the parameter 'kernels', with values 'both' (default), 'testvtrain' or 'trainvtrain'
@@ -176,7 +176,7 @@ def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, kernels='both'):
   
 # testvstrain kernel
     if kernels=='both' or kernels=='testvtrain':
-        K_testvtrain = torch.zeros((n_pts,4))
+        K_testvtrain = torch.zeros((n_pts,n_train))
         for i, gamma in enumerate(gamma_test):
             if ((i+1)*10)%len(gamma_test) == 0:
                 print('K_testvtrain is {}% complete'.format(int((i+1)/len(gamma_test)*100)))
@@ -191,8 +191,8 @@ def kernel_mats(net, gamma_train, gamma_test, use_cuda = True, kernels='both'):
   
 # trainvstrain kernel
     if kernels=='both' or kernels=='trainvtrain':
-        K_trainvtrain = torch.zeros((4,4))
-        for i in range(4):
+        K_trainvtrain = torch.zeros((n_train,n_train))
+        for i in range(n_train):
             grad_i = grad_list[i]
             for j in range(i+1):
                 grad_j = grad_list[j]
