@@ -41,36 +41,36 @@ def plot_6pt2(gamma_data, target_data):
 	target_data = torch.tensor(target_data).float()
 	input_data = circle_transform(gamma_data)
 	if use_cuda:
-  		input_data = input_data.cuda()
-  		target_data = target_data.cuda()
+		input_data = input_data.cuda()
+		target_data = target_data.cuda()
 
-"""### Create Plot"""
+	"""### Create Plot"""
 
 	gamma_vec = torch.tensor(np.linspace(-np.pi, np.pi, 100))
 	circle_points = circle_transform(gamma_vec)
 	if use_cuda:
-  		circle_points = circle_points.cuda()
+		circle_points = circle_points.cuda()
 
 	for i in range(10):
-  	# 1000 width first
-  		net = FourLayersNet(1000)
-  		if use_cuda:
-    			net = net.cuda()
-	  	train_net(net, 1000, input_data, target_data)
-	  	output_vec = net(circle_points).cpu()
-	  	plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='red',
-		  	linestyle='--', alpha = 0.3)
-	  	# 50 width
-	  	net = FourLayersNet(50)
-	  	if use_cuda:
-	    		net = net.cuda()
-	  	train_net(net, 1000, input_data, target_data)
-  	output_vec = net(circle_points).cpu()
-  	plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='green',
-           	linestyle='--', alpha = 0.3)
-  
-  	#print('Completed initialisation {}'.format(i))
-  
+	# 1000 width first
+		net = FourLayersNet(1000)
+		if use_cuda:
+			net = net.cuda()
+		train_net(net, 1000, input_data, target_data)
+		output_vec = net(circle_points).cpu()
+		plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='red',
+			linestyle='--', alpha = 0.3)
+		# 50 width
+		net = FourLayersNet(50)
+		if use_cuda:
+			net = net.cuda()
+		train_net(net, 1000, input_data, target_data)
+	output_vec = net(circle_points).cpu()
+	plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='green',
+		linestyle='--', alpha = 0.3)
+
+	#print('Completed initialisation {}'.format(i))
+
 	plt.xlabel('$\gamma$')
 	plt.ylabel('$f_{ \\theta}(sin(\gamma),cos(\gamma))$')
 	net = FourLayersNet(1000)
@@ -79,39 +79,39 @@ def plot_6pt2(gamma_data, target_data):
 	"""### Getting the GP process plot is harder (I think) because of a lack of a standard kernel, here is an attempt but it is probably horrifically inefficient"""
 
 	n_pts=100
-	
+
 	temp_mat = torch.mm(K_testvtrain, K_trainvtrain_inv)	
 
 	# number of points in plot
-	
+
 	target_data = target_data.cpu()
 
 	mean_vec = torch.mm(temp_mat, target_data.unsqueeze(1))
-"""%%time
-# grad_mat is kappa on p7 of NTK paper
-for i, gamma in enumerate(gamma_test):
-  if i%10 == 0:
-    print('point {}'.format(i))
-  circle_pt = circle_transform(gamma)
-  if use_cuda and torch.cuda.is_available():
-    circle_pt = circle_pt.cuda()
-  loss = net(circle_pt)
-  grads = cpu_tuple(torch.autograd.grad(loss,net.parameters(), retain_graph = True)) # extract NN gradients 
-  for j in range(len(grad_list)):
-    pt_grad = grad_list[j] # the gradients at the jth (out of 4) data point
-    grad_mat[i, j] = sum([torch.sum(torch.mul(grads[u], pt_grad[u])) for u in range(len(grads))])
-"""
+	"""%%time
+	# grad_mat is kappa on p7 of NTK paper
+	for i, gamma in enumerate(gamma_test):
+	if i%10 == 0:
+	print('point {}'.format(i))
+	circle_pt = circle_transform(gamma)
+	if use_cuda and torch.cuda.is_available():
+	circle_pt = circle_pt.cuda()
+	loss = net(circle_pt)
+	grads = cpu_tuple(torch.autograd.grad(loss,net.parameters(), retain_graph = True)) # extract NN gradients 
+	for j in range(len(grad_list)):
+	pt_grad = grad_list[j] # the gradients at the jth (out of 4) data point
+	grad_mat[i, j] = sum([torch.sum(torch.mul(grads[u], pt_grad[u])) for u in range(len(grads))])
+	"""
 
-"""### It remains to estimate sigma matrix"""
+	"""### It remains to estimate sigma matrix"""
 
 	variance_vec = variance_est(10000, 100, temp_mat, 10000)
 
 	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()+1.28*np.sqrt(variance_vec.detach().numpy()),
-         color='darkblue', linestyle = '--')
+	 color='darkblue', linestyle = '--')
 	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()-1.28*np.sqrt(variance_vec.detach().numpy()), 
-         color='darkblue', linestyle = '--', label = '$n=\infty, \{P_{10}, P_{90}\}$')
+	 color='darkblue', linestyle = '--', label = '$n=\infty, \{P_{10}, P_{90}\}$')
 	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()+0*np.sqrt(variance_vec.detach().numpy()), 
-         color='darkblue', label = '$n=\infty, P_{50}$')
+	 color='darkblue', label = '$n=\infty, P_{50}$')
 
 
 	handles, labels = plt.gca().get_legend_handles_labels()
