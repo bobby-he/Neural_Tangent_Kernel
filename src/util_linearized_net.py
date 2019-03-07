@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-from NTK_net import cpu_tuple, circle_transform
+from .NTK_net import cpu_tuple, circle_transform
 
 
 # compute the list of gradients of the prediction of the net over the different training points (denoted by gamma_data)
