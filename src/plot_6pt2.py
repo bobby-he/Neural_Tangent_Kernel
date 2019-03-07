@@ -106,11 +106,11 @@ def plot_6pt2(gamma_data, target_data):
 
 	variance_vec = variance_est(10000, 100, temp_mat, 10000)
 
-	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()+1.28*np.sqrt(variance_vec.detach().numpy()),
+	plt.plot(gamma_vec.numpy(), mean_vec.view(-1).detach().numpy()+1.28*np.sqrt(variance_vec.detach().numpy()),
 	 color='darkblue', linestyle = '--')
-	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()-1.28*np.sqrt(variance_vec.detach().numpy()), 
+	plt.plot(gamma_vec.numpy(), mean_vec.view(-1).detach().numpy()-1.28*np.sqrt(variance_vec.detach().numpy()), 
 	 color='darkblue', linestyle = '--', label = '$n=\infty, \{P_{10}, P_{90}\}$')
-	plt.plot(gamma_test.numpy(), mean_vec.view(-1).detach().numpy()+0*np.sqrt(variance_vec.detach().numpy()), 
+	plt.plot(gamma_vec.numpy(), mean_vec.view(-1).detach().numpy()+0*np.sqrt(variance_vec.detach().numpy()), 
 	 color='darkblue', label = '$n=\infty, P_{50}$')
 
 
