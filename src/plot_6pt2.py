@@ -65,8 +65,8 @@ def plot_6pt2(gamma_data, target_data):
 		if use_cuda:
 			net = net.cuda()
 		train_net(net, 1000, input_data, target_data)
-	output_vec = net(circle_points).cpu()
-	plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='green',
+		output_vec = net(circle_points).cpu()
+		plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='green',
 		linestyle='--', alpha = 0.3)
 
 	#print('Completed initialisation {}'.format(i))
