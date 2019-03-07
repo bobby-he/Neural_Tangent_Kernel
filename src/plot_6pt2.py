@@ -59,7 +59,7 @@ def plot_6pt2(gamma_data, target_data):
 		train_net(net, 1000, input_data, target_data)
 		output_vec = net(circle_points).cpu()
 		plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='red',
-			linestyle='--', alpha = 0.3)
+			linestyle='--', alpha = 0.3, label = '$n=1000$')
 		# 50 width
 		net = FourLayersNet(50)
 		if use_cuda:
@@ -67,7 +67,7 @@ def plot_6pt2(gamma_data, target_data):
 		train_net(net, 1000, input_data, target_data)
 		output_vec = net(circle_points).cpu()
 		plt.plot(gamma_vec.numpy(), output_vec.detach().numpy(), color='green',
-		linestyle='--', alpha = 0.3)
+		linestyle='--', alpha = 0.3, label = '$n=50$')
 
 	#print('Completed initialisation {}'.format(i))
 
