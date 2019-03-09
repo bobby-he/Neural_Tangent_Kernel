@@ -3,7 +3,7 @@ Simulations and report based on the papers [Neural Tangent Kernel][1] by Jacot e
   
 Produced as part of ML module for OxWaSP CDT 1st year.
 
-## Gif of experiments in §6.2 of [Jacot et al.][1]
+### Example from  §6.2 of [Jacot et al.][1]
 ![6pt2_gif](https://github.com/bobby-he/Neural_Tangent_Kernel/blob/master/animations/anim_6pt2.gif)
 
 
