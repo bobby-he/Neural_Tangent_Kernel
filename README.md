@@ -1,1 +1,2 @@
-# Neural_Tangent_Kernel
+# Neural Tangent Kernel in PyTorch
+Produced as part of ML module for OxWaSP CDT
